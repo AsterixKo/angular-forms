@@ -1,7 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ReactiveFormComponent } from './components/reactive-form/reactive-form.component';
+import { TemplateFormComponent } from './components/template-form/template-form.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: 'template', component: TemplateFormComponent },
+  { path: 'reactivo', component: ReactiveFormComponent },
+  { path: '**', pathMatch: 'full', redirectTo: 'template' }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
