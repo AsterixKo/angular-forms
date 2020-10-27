@@ -29,15 +29,25 @@ export class ReactiveFormComponent implements OnInit {
     return this.forma.get('email').invalid && this.forma.get('email').touched;
   }
 
+  get calleInvalido(): boolean {
+    return this.forma.get('direccion.calle').invalid && this.forma.get('direccion.calle').touched;
+  }
+  get ciudadInvalido(): boolean {
+    return this.forma.get('direccion.ciudad').invalid && this.forma.get('direccion.ciudad').touched;
+  }
+  get paisInvalido(): boolean {
+    return this.forma.get('direccion.pais').invalid && this.forma.get('direccion.pais').touched;
+  }
+
   createForm() {
     this.forma = this.fb.group({
       nombre: ['Horse', [Validators.required, Validators.minLength(3)]],
       apellido: ['Luis', Validators.required],
       email: ['horse@luis.com', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$")]],
       direccion: this.fb.group({
-        calle: ['', Validators.required],
-        ciudad: ['', Validators.required],
-        pais: ['', Validators.required]
+        calle: ['Plaza España', Validators.required],
+        ciudad: ['Madrid', Validators.required],
+        pais: ['España', Validators.required]
       })
     });
   }
