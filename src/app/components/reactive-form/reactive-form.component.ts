@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ValidatorsService } from 'src/app/services/validators.service';
 
 @Component({
   selector: 'app-reactive-form',
@@ -10,7 +11,7 @@ export class ReactiveFormComponent implements OnInit {
 
   forma: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private validadores: ValidatorsService) {
     this.createForm();
   }
 
@@ -41,15 +42,22 @@ export class ReactiveFormComponent implements OnInit {
 
   createForm() {
     this.forma = this.fb.group({
-      nombre: ['Horse', [Validators.required, Validators.minLength(3)]],
+      nombre: ['Horse', [Validators.required, Validators.minLength(3), this.validadores.isAdmin]],
       apellido: ['Luis', Validators.required],
-      email: ['horse@luis.com', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$")]],
+      email: ['horse@luis.com', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$")], this.validadores.emailExists],
       direccion: this.fb.group({
         calle: ['Plaza España', Validators.required],
         ciudad: ['Madrid', Validators.required],
         pais: ['España', Validators.required]
-      })
+      }),
+      hobbies: this.fb.array([
+        // ['uno'], ['dos'], ['tres']
+      ])
     });
+  }
+
+  get hobbies(): FormArray {
+    return this.forma.get('hobbies') as FormArray;
   }
 
   saveForm() {
@@ -64,7 +72,7 @@ export class ReactiveFormComponent implements OnInit {
   }
 
   loadDataToForm() {
-    //lo llamariamos despues de hacer una petición y completaríamos los datos
+    //lo llamariamos despues de hacer una petición a un servicio y completaríamos los datos
     this.forma.setValue({
       nombre: 'Pepe',
       apellido: 'Pepon',
@@ -77,4 +85,11 @@ export class ReactiveFormComponent implements OnInit {
     });
   }
 
+  addHobby(): void {
+    this.hobbies.push(this.fb.control('', Validators.required));
+  }
+
+  deleteHobby(id: number) {
+    this.hobbies.removeAt(id);
+  }
 }
